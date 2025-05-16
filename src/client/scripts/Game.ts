@@ -1,11 +1,15 @@
 import { Application, ColorSource, Container } from "pixi.js";
 import { initDevtools } from "@pixi/devtools"
 import { Entity } from "./Utils/Entity";
+import { deck } from "../client";
 
 export class Game
 {
     private app!: Application;
     private activeEntities: Entity[] = [];
+
+    private startTime: number = 0.0;
+    private currentTime: number = 0.0;
 
     constructor(bgColor: ColorSource = 0x000000)
     {
@@ -18,23 +22,33 @@ export class Game
             resizeTo: window,
             backgroundColor: bgColor
         });
+        this.app.stage.sortableChildren = true;
         document.body.appendChild(this.app.view as HTMLCanvasElement);
 
         initDevtools({ app: this.app });
         this.app.ticker.add(() => { 
             this.update(); 
         });
+
+        this.startTime = performance.now();
     }
 
     private update()
     {
+        let timeSinceStartMS = performance.now();
+        this.currentTime = (timeSinceStartMS - this.startTime) / 1000;
+
         let deltaTime = this.app.ticker.deltaMS * 0.001;
         let fps = this.app.ticker.FPS;
-
+        
         this.activeEntities.forEach(entity => {
             entity.update(deltaTime);
         });
+
+        deck.update();
     }
+
+    public getCurrentTime() { return this.currentTime; }
 
     public addGfxToGame(gfx: Container)
     {
