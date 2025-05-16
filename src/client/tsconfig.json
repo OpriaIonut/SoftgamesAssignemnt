@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "target": "es2015",
+        "moduleResolution": "node",
+        "strict": true,
+        "paths": {}
+    },
+    "include": ["**/*.ts"]
+}
