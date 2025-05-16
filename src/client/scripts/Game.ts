@@ -31,8 +31,6 @@ export class Game
         let deltaTime = this.app.ticker.deltaMS * 0.001;
         let fps = this.app.ticker.FPS;
 
-        console.log(deltaTime + " " + fps);
-
         this.activeEntities.forEach(entity => {
             entity.update(deltaTime);
         });

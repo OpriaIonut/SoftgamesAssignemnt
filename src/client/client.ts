@@ -1,7 +1,8 @@
+import { DeckManager } from './scripts/AceOfShadows/DeckManager';
 import { Game } from './scripts/Game';
 import { GameSprite } from './scripts/Utils/GameSprite';
 
 export const game = new Game()
 
 // Load the sprite
-const sprite = new GameSprite("/images/pikatchu.png");
+const deck = new DeckManager("/images/aceOfShadowsSprites.png", 16, 16, 144);
