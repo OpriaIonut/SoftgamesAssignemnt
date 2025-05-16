@@ -1,9 +1,12 @@
 import { Assets, BaseTexture, Rectangle, Texture, Sprite, Point } from "pixi.js";
 import { game } from "../../client";
 import { DeckCard } from "./DeckCard";
+import { Scene } from "../Utils/Scene";
 
 export class DeckManager
 {
+    private scene: Scene;
+
     private spritesheet!: BaseTexture;
     private deck1Sprites: DeckCard[] = [];
     private deck2Sprites: DeckCard[] = [];
@@ -12,7 +15,6 @@ export class DeckManager
 
     private deck1Pos: Point;
     private deck2Pos: Point;
-    private topCardOffset: Point;
     private cardScale: Point;
 
     private cardsMoved: number = 0;
@@ -21,11 +23,11 @@ export class DeckManager
     private cardDeckSwitchCooldown: number = 1.0;
     private cardAnimationTime: number = 2.0;
 
-    constructor(spritesheetSrc: string, spritesPerRow: number, spritesPerCol: number, spritesToDisplay: number)
+    constructor(scene: Scene, spritesheetSrc: string, spritesPerRow: number, spritesPerCol: number, spritesToDisplay: number)
     {
+        this.scene = scene;
         this.deck1Pos = new Point(window.innerWidth / 4, window.innerHeight / 2);
         this.deck2Pos = new Point(window.innerWidth * 3 / 4, window.innerHeight / 2);
-        this.topCardOffset = new Point(30, 30);
         this.cardScale = new Point(2, 2);
 
         this.init(spritesheetSrc, spritesPerRow, spritesPerCol, spritesToDisplay);
@@ -49,7 +51,7 @@ export class DeckManager
             y *= spriteHeight;
 
             let rect = new Rectangle(x, y, spriteWidth, spriteHeight);
-            let card = new DeckCard(this.spritesheet, rect, this.deck1Pos, this.cardScale);
+            let card = new DeckCard(this.scene, this.spritesheet, rect, this.deck1Pos, this.cardScale);
             this.deck1Sprites.push(card);
         }
     }

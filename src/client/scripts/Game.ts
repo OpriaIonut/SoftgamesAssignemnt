@@ -1,12 +1,13 @@
 import { Application, ColorSource, Container } from "pixi.js";
 import { initDevtools } from "@pixi/devtools"
-import { Entity } from "./Utils/Entity";
-import { deck } from "../client";
+import { Scene } from "./Utils/Scene";
 
 export class Game
 {
     private app!: Application;
-    private activeEntities: Entity[] = [];
+    private scenes: Scene[] = [];
+
+    private activeSceneIndex: number = -1;
 
     private startTime: number = 0.0;
     private currentTime: number = 0.0;
@@ -41,40 +42,46 @@ export class Game
         let deltaTime = this.app.ticker.deltaMS * 0.001;
         let fps = this.app.ticker.FPS;
         
-        this.activeEntities.forEach(entity => {
-            entity.update(deltaTime);
-        });
-
-        deck.update();
+        if(this.activeSceneIndex >= 0)
+            this.scenes[this.activeSceneIndex].update();
     }
 
     public getCurrentTime() { return this.currentTime; }
 
-    public addGfxToGame(gfx: Container)
+    public addScene(scene: Scene)
     {
-        this.app.stage.addChild(gfx);
+        this.scenes.push(scene);
     }
 
-    public removeGfxFromGame(gfx: Container)
+    public removeScene(scene: Scene)
     {
-        this.app.stage.removeChild(gfx);
-    }
-
-    public addEntity(entity: Entity)
-    {
-        this.activeEntities.push(entity);
-    }
-
-    public discardEntity(entity: Entity)
-    {
-        for(let index = 0; index < this.activeEntities.length; ++index)
+        for(let index = 0; index < this.scenes.length; ++index)
         {
-            if(this.activeEntities[index] == entity)
+            if(this.scenes[index] == scene)
             {
-                this.activeEntities.splice(index, 1);
+                this.scenes.splice(index, 1);
                 break;
             }
         }
-        entity.discard();
+    }
+
+    public changeScene(scene: Scene)
+    {
+        if(this.activeSceneIndex >= 0)
+        {
+            this.app.stage.removeChild(this.scenes[this.activeSceneIndex].getScene());
+            this.scenes[this.activeSceneIndex].reset();
+        }
+
+        for(let index = 0; index < this.scenes.length; ++index)
+        {
+            if(this.scenes[index] == scene)
+            {
+                this.activeSceneIndex = index;
+                break;
+            }
+        }
+        this.app.stage.addChild(this.scenes[this.activeSceneIndex].getScene());
+        this.scenes[this.activeSceneIndex].start();
     }
 }

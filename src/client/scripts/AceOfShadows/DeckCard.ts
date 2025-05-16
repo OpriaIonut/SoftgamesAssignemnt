@@ -1,6 +1,7 @@
 import { BaseTexture, Point, Rectangle, Sprite, Texture } from "pixi.js";
 import { game } from "../../client";
 import { MathUtils } from "../Utils/MathUtils";
+import { Scene } from "../Utils/Scene";
 
 export class DeckCard
 {
@@ -16,7 +17,7 @@ export class DeckCard
     private endPos: Point = new Point(0, 0);
     private animStartTime: number = 0.0;
 
-    constructor(texture: BaseTexture, rect: Rectangle, pos: Point, scale: Point)
+    constructor(scene: Scene, texture: BaseTexture, rect: Rectangle, pos: Point, scale: Point)
     {
         this.tex = new Texture(texture, rect);
         this.sprite = new Sprite(this.tex);
@@ -24,7 +25,7 @@ export class DeckCard
         this.sprite.position.set(pos.x, pos.y);
         this.sprite.scale.set(scale.x, scale.y);
 
-        game.addGfxToGame(this.sprite);
+        scene.addGfxToScene(this.sprite);
     }
 
     public update()
