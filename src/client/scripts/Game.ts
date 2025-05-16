@@ -1,4 +1,4 @@
-import { Application, ColorSource, Container } from "pixi.js";
+import { Application, ColorSource, Container, Text } from "pixi.js";
 import { initDevtools } from "@pixi/devtools"
 import { Scene } from "./Utils/Scene";
 
@@ -11,6 +11,8 @@ export class Game
 
     private startTime: number = 0.0;
     private currentTime: number = 0.0;
+
+    private fpsCounter!: Text;
 
     constructor(bgColor: ColorSource = 0x000000)
     {
@@ -31,6 +33,13 @@ export class Game
             this.update(); 
         });
 
+        this.fpsCounter = new Text("FPS: 0", {
+            fontSize: 22
+        });
+        this.fpsCounter.position.set(window.innerWidth - 50, 25);
+        this.fpsCounter.anchor.set(1, 0);
+        this.app.stage.addChild(this.fpsCounter);
+
         this.startTime = performance.now();
     }
 
@@ -41,6 +50,7 @@ export class Game
 
         let deltaTime = this.app.ticker.deltaMS * 0.001;
         let fps = this.app.ticker.FPS;
+        this.fpsCounter.text = "FPS: " + Math.round(fps);
         
         if(this.activeSceneIndex >= 0)
             this.scenes[this.activeSceneIndex].update();
