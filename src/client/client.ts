@@ -1,13 +1,16 @@
 import { AceOfShadowsScene } from './scripts/AceOfShadows/AceOfShadowsScene';
 import { Game } from './scripts/Game';
+import { MagicWorldsScene } from './scripts/MagicWorlds/MagicWorldsScene';
 import { PhoenixFlameScene } from './scripts/PhoenixFlame/PhoenixFlameScene';
 
 export const game = new Game(0xdbc78f)
 
 const aceOfShadow = new AceOfShadowsScene();
+const magicWorlds = new MagicWorldsScene();
 const phoenixFlame = new PhoenixFlameScene();
 
 game.addScene(aceOfShadow);
+game.addScene(magicWorlds);
 game.addScene(phoenixFlame);
 
 game.changeScene(aceOfShadow);
@@ -26,6 +29,9 @@ sceneSelectionDropdown.addEventListener('change', () => {
   {
     case "aceOfShadows":
       game.changeScene(aceOfShadow);
+      break;
+    case "magicWorlds":
+      game.changeScene(magicWorlds);
       break;
     case "phoenixFlame":
       game.changeScene(phoenixFlame);

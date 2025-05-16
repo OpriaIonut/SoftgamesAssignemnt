@@ -49,14 +49,16 @@ export class DeckCard
         }
     }
 
-    public moveTo(location: Point, animDuration: number, newZIndex: number, onAnimationComplete?: (card: DeckCard) => void)
+    public moveTo(location: Point, animDuration: number, newZIndex: number = -1, onAnimationComplete?: (card: DeckCard) => void)
     {
         this.endPos.set(location.x, location.y);
         this.runAnimation = true;
         this.animDuration = animDuration;
-        this.zIndex = newZIndex;
         this.callback = onAnimationComplete;
         
+        if(newZIndex != -1)
+            this.zIndex = newZIndex;
+
         this.startPos.set(this.sprite.position.x, this.sprite.position.y);
         this.animStartTime = game.getCurrentTime();
     }

@@ -19,6 +19,9 @@ export class DeckManager
     private deck2Pos: Point;
     private cardScale: Point = new Point(2, 2);
 
+    private offsetDeck1Pos: Point;
+    private offsetDeck2Pos: Point;
+
     private cardsMoved: number = 0;
 
     private lastCardMoveTime: number = 0.0;
@@ -30,6 +33,10 @@ export class DeckManager
         this.scene = scene;
         this.deck1Pos = new Point(window.innerWidth / 4, window.innerHeight / 2);
         this.deck2Pos = new Point(window.innerWidth * 3 / 4, window.innerHeight / 2);
+
+        let deckOffset = 30;
+        this.offsetDeck1Pos = new Point(this.deck1Pos.x - deckOffset, this.deck1Pos.y - deckOffset);
+        this.offsetDeck2Pos = new Point(this.deck2Pos.x + deckOffset, this.deck2Pos.y - deckOffset);
     }
 
     public async init(spritesheetSrc: string, spritesPerRow: number, spritesPerCol: number, spritesToDisplay: number)
@@ -50,9 +57,10 @@ export class DeckManager
             y *= spriteHeight;
 
             let rect = new Rectangle(x, y, spriteWidth, spriteHeight);
-            let card = new DeckCard(this.scene, this.spritesheet, rect, this.deck1Pos, this.cardScale);
+            let card = new DeckCard(this.scene, this.spritesheet, rect, this.offsetDeck1Pos, this.cardScale);
             this.deck1Sprites.push(card);
         }
+        this.deck1Sprites[this.deck1Sprites.length - 1].setPosition(this.deck1Pos);
     }
 
     public start()
@@ -69,8 +77,16 @@ export class DeckManager
         if(this.deck1Sprites.length > 0 && currentTime - this.lastCardMoveTime > this.cardDeckSwitchCooldown)
         {
             let topCardIndex = this.deck1Sprites.length - 1;
+
+            this.deck1Sprites[topCardIndex - 1].moveTo(this.deck1Pos, 0.2);
+
             this.deck1Sprites[topCardIndex].moveTo(this.deck2Pos, this.cardAnimationTime, this.cardsMoved, (card: DeckCard) => {
 
+                if(this.deck2Sprites.length > 0)
+                {
+                    this.deck2Sprites[this.deck2Sprites.length - 1].moveTo(this.offsetDeck2Pos, 0.2);
+                }
+                    
                 this.deck2Sprites.push(card);
                 for(let index = 0; index < this.cardsInTransition.length; ++index)
                 {
