@@ -3,22 +3,29 @@ import { Scene } from "../Utils/Scene";
 
 export class PhoenixFlameScene extends Scene
 {
+    private isInitialized: boolean = false;
+    private animatedSprite?: AnimatedSprite;
+
     public async start() 
     {
-        let spritesheetData = await Assets.load('/config/spritesheet.json');
+        if(!this.isInitialized)
+        {
+            const spritesheetData = await Assets.load('/config/spritesheet.json');
+            const flameData: ISpritesheetData = spritesheetData.flame;
 
-        const flameData: ISpritesheetData = spritesheetData.flame;
+            const atlasTexture = await Assets.load(flameData.meta.image as string);
+            const spritesheet = new Spritesheet(atlasTexture, flameData);
+            await spritesheet.parse();
 
-        const atlasTexture = await Assets.load(flameData.meta.image as string);
-        const spritesheet = new Spritesheet(atlasTexture, flameData);
-        await spritesheet.parse();
+            this.animatedSprite = new AnimatedSprite(spritesheet.animations.flame)
+            this.animatedSprite.anchor.set(0.5, 0.5);
+            this.animatedSprite.position.set(window.innerWidth / 2, window.innerHeight / 2);
+            this.animatedSprite.animationSpeed = 0.15
+            this.scene.addChild(this.animatedSprite);
+            this.isInitialized = true;
+        }
 
-        const animatedSprite = new AnimatedSprite(spritesheet.animations.flame)
-        animatedSprite.anchor.set(0.5, 0.5);
-        animatedSprite.position.set(window.innerWidth / 2, window.innerHeight / 2);
-        animatedSprite.animationSpeed = 0.15
-        animatedSprite.play();
-        this.scene.addChild(animatedSprite);
+        this.animatedSprite?.play();
     }
 
     public update(): void 
@@ -28,6 +35,6 @@ export class PhoenixFlameScene extends Scene
 
     public reset(): void 
     {
-        
+        this.animatedSprite?.stop();
     }
 }

@@ -1,4 +1,4 @@
-import { AceOfShadowsScene } from './scripts/AceOfShadows/AceofShadowsScene';
+import { AceOfShadowsScene } from './scripts/AceOfShadows/AceOfShadowsScene';
 import { Game } from './scripts/Game';
 import { PhoenixFlameScene } from './scripts/PhoenixFlame/PhoenixFlameScene';
 
@@ -18,11 +18,13 @@ sceneSelectionDropdown.addEventListener('change', () => {
 
   switch (value) 
   {
-    case "aceofShadow":
+    case "aceOfShadows":
       game.changeScene(aceOfShadow);
       break;
     case "phoenixFlame":
       game.changeScene(phoenixFlame);
       break;
+    default:
+      console.log("Could not change scene, make sure to properly implement the value: " + value);
   }
 });

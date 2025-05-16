@@ -60,4 +60,19 @@ export class DeckCard
         this.startPos.set(this.sprite.position.x, this.sprite.position.y);
         this.animStartTime = game.getCurrentTime();
     }
+
+    public setPosition(pos: Point)
+    {
+        this.sprite.position.set(pos.x, pos.y);
+    }
+
+    public setZIndex(value: number)
+    {
+        this.sprite.zIndex = value;
+    }
+
+    public stop()
+    {
+        this.runAnimation = false;
+    }
 }

@@ -1,4 +1,4 @@
-import { Assets, BaseTexture, Rectangle, Texture, Sprite, Point } from "pixi.js";
+import { Assets, BaseTexture, Rectangle, Point } from "pixi.js";
 import { game } from "../../client";
 import { DeckCard } from "./DeckCard";
 import { Scene } from "../Utils/Scene";
@@ -6,6 +6,8 @@ import { Scene } from "../Utils/Scene";
 export class DeckManager
 {
     private scene: Scene;
+
+    private runAnimation: boolean = false;
 
     private spritesheet!: BaseTexture;
     private deck1Sprites: DeckCard[] = [];
@@ -15,7 +17,7 @@ export class DeckManager
 
     private deck1Pos: Point;
     private deck2Pos: Point;
-    private cardScale: Point;
+    private cardScale: Point = new Point(2, 2);
 
     private cardsMoved: number = 0;
 
@@ -23,17 +25,14 @@ export class DeckManager
     private cardDeckSwitchCooldown: number = 1.0;
     private cardAnimationTime: number = 2.0;
 
-    constructor(scene: Scene, spritesheetSrc: string, spritesPerRow: number, spritesPerCol: number, spritesToDisplay: number)
+    constructor(scene: Scene)
     {
         this.scene = scene;
         this.deck1Pos = new Point(window.innerWidth / 4, window.innerHeight / 2);
         this.deck2Pos = new Point(window.innerWidth * 3 / 4, window.innerHeight / 2);
-        this.cardScale = new Point(2, 2);
-
-        this.init(spritesheetSrc, spritesPerRow, spritesPerCol, spritesToDisplay);
     }
 
-    private async init(spritesheetSrc: string, spritesPerRow: number, spritesPerCol: number, spritesToDisplay: number)
+    public async init(spritesheetSrc: string, spritesPerRow: number, spritesPerCol: number, spritesToDisplay: number)
     {
         const texture = await Assets.load(spritesheetSrc);
 
@@ -56,8 +55,16 @@ export class DeckManager
         }
     }
 
+    public start()
+    {
+        this.runAnimation = true;
+    }
+
     public update()
     {
+        if(!this.runAnimation)
+            return;
+
         let currentTime = game.getCurrentTime()
         if(this.deck1Sprites.length > 0 && currentTime - this.lastCardMoveTime > this.cardDeckSwitchCooldown)
         {
@@ -89,5 +96,28 @@ export class DeckManager
         this.deck2Sprites.forEach((card) => {
             card.update();
         });
+    }
+
+    public reset()
+    {
+        for(let index = this.cardsInTransition.length - 1; index >= 0; --index)
+        {
+            this.cardsInTransition[index].stop();
+            this.cardsInTransition[index].setPosition(this.deck1Pos);
+            this.cardsInTransition[index].setZIndex(this.deck1Sprites.length);
+            this.deck1Sprites.push(this.cardsInTransition[index]);
+        }
+        for(let index = this.deck2Sprites.length - 1; index >= 0; --index)
+        {
+            this.deck2Sprites[index].stop();
+            this.deck2Sprites[index].setPosition(this.deck1Pos);
+            this.deck2Sprites[index].setZIndex(this.deck1Sprites.length);
+            this.deck1Sprites.push(this.deck2Sprites[index]);
+        }
+        
+        this.deck2Sprites = [];
+        this.cardsInTransition = [];
+        this.runAnimation = false;
+        this.cardsMoved = 0;
     }
 }
