@@ -94,4 +94,11 @@ export class Game
         this.app.stage.addChild(this.scenes[this.activeSceneIndex].getScene());
         this.scenes[this.activeSceneIndex].start();
     }
+
+    public enterFullscreenMode()
+    {
+        const canvas = this.app.view as HTMLCanvasElement;
+        if (canvas.requestFullscreen)
+            canvas.requestFullscreen();
+    }
 }

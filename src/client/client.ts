@@ -12,6 +12,12 @@ game.addScene(phoenixFlame);
 
 game.changeScene(aceOfShadow);
 
+
+const fullscreenBtn = document.getElementById("fullscreenBtn") as HTMLButtonElement;
+fullscreenBtn.addEventListener('click', () => {
+  game.enterFullscreenMode();
+})
+
 const sceneSelectionDropdown = document.getElementById("sceneChangerDropdown") as HTMLSelectElement;
 sceneSelectionDropdown.addEventListener('change', () => {
   const value = sceneSelectionDropdown.value;
