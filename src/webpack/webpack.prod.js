@@ -6,5 +6,8 @@ module.exports = merge(common, {
     performance: {
         hints: false,
     },
-    plugins:[]
+    plugins:[],
+    output: {
+        publicPath: '/SoftgamesAssignemnt/'
+    }
 })
