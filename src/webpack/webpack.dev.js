@@ -1,6 +1,7 @@
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common.js')
 const path = require('path');
+const { EnvironmentPlugin } = require('webpack');
 
 module.exports = merge(common, {
     mode: 'development',
@@ -12,5 +13,9 @@ module.exports = merge(common, {
         hot: false,
         open: true
     },
-    plugins:[]
+    plugins:[
+        new EnvironmentPlugin({
+            IMG_BASE_URL: ''
+        })
+    ]
 })

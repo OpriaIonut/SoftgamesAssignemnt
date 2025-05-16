@@ -12,7 +12,7 @@ export class AceOfShadowsScene extends Scene
         {
             this.scene.sortableChildren = true;
             this.deck = new DeckManager(this);
-            await this.deck.init("/images/aceOfShadowsSprites.png", 16, 16, 144);
+            await this.deck.init(process.env.IMG_BASE_URL + "/images/aceOfShadowsSprites.png", 16, 16, 144);
         }
 
         this.deck?.start();

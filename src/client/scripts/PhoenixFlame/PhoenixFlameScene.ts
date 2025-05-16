@@ -10,10 +10,10 @@ export class PhoenixFlameScene extends Scene
     {
         if(!this.isInitialized)
         {
-            const spritesheetData = await Assets.load('/config/spritesheet.json');
+            const spritesheetData = await Assets.load(process.env.IMG_BASE_URL + '/config/spritesheet.json');
             const flameData: ISpritesheetData = spritesheetData.flame;
 
-            const atlasTexture = await Assets.load(flameData.meta.image as string);
+            const atlasTexture = await Assets.load((process.env.IMG_BASE_URL as string) + (flameData.meta.image as string));
             const spritesheet = new Spritesheet(atlasTexture, flameData);
             await spritesheet.parse();
 
