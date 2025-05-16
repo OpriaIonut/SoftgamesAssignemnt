@@ -1,12 +1,12 @@
 import { AceOfShadowsScene } from './scripts/AceOfShadows/AceOfShadowsScene';
 import { Game } from './scripts/Game';
-import { MagicWorldsScene } from './scripts/MagicWorlds/MagicWorldsScene';
+import { MagicWordsScene } from './scripts/MagicWorlds/MagicWordsScene';
 import { PhoenixFlameScene } from './scripts/PhoenixFlame/PhoenixFlameScene';
 
 export const game = new Game(0xdbc78f)
 
 const aceOfShadow = new AceOfShadowsScene();
-const magicWorlds = new MagicWorldsScene();
+const magicWorlds = new MagicWordsScene();
 const phoenixFlame = new PhoenixFlameScene();
 
 game.addScene(aceOfShadow);

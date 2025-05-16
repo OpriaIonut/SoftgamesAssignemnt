@@ -1,4 +1,4 @@
-import { Application, ColorSource, Container, Text } from "pixi.js";
+import { Application, ColorSource, Container, Point, Text } from "pixi.js";
 import { initDevtools } from "@pixi/devtools"
 import { Scene } from "./Utils/Scene";
 
@@ -100,5 +100,10 @@ export class Game
         const canvas = this.app.view as HTMLCanvasElement;
         if (canvas.requestFullscreen)
             canvas.requestFullscreen();
+    }
+
+    public getWindowSize()
+    {
+        return new Point(this.app.view.width, this.app.view.height);
     }
 }
