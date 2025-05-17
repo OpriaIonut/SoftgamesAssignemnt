@@ -1,5 +1,6 @@
 import { Point } from "pixi.js";
 
+//Utility function for math formulas
 export class MathUtils
 {
     public static lerpNumber(a: number, b: number, lerpVal: number)

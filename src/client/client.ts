@@ -2,41 +2,28 @@ import { AceOfShadowsScene } from './scripts/AceOfShadows/AceOfShadowsScene';
 import { Game } from './scripts/Game';
 import { MagicWordsScene } from './scripts/MagicWorlds/MagicWordsScene';
 import { PhoenixFlameScene } from './scripts/PhoenixFlame/PhoenixFlameScene';
+import { UIManager } from './scripts/UIManager';
+import { Scene } from './scripts/Utils/Scene';
 
-export const game = new Game(0xdbc78f)
+//Game class that hold all of the rendering logic for the app, game loop and a couple of other utility functions
+export const game = new Game(0xdbc78f);
 
+//Create each of the individual minigames that we can run
 const aceOfShadow = new AceOfShadowsScene();
 const magicWorlds = new MagicWordsScene();
 const phoenixFlame = new PhoenixFlameScene();
 
+//Register each of the scenes in the game class, to be able to switch between them
 game.addScene(aceOfShadow);
 game.addScene(magicWorlds);
 game.addScene(phoenixFlame);
 
+//Initially load the Ace of Shadow scene
 game.changeScene(aceOfShadow);
 
-
-const fullscreenBtn = document.getElementById("fullscreenBtn") as HTMLButtonElement;
-fullscreenBtn.addEventListener('click', () => {
-  game.enterFullscreenMode();
-})
-
-const sceneSelectionDropdown = document.getElementById("sceneChangerDropdown") as HTMLSelectElement;
-sceneSelectionDropdown.addEventListener('change', () => {
-  const value = sceneSelectionDropdown.value;
-
-  switch (value) 
-  {
-    case "aceOfShadows":
-      game.changeScene(aceOfShadow);
-      break;
-    case "magicWorlds":
-      game.changeScene(magicWorlds);
-      break;
-    case "phoenixFlame":
-      game.changeScene(phoenixFlame);
-      break;
-    default:
-      console.log("Could not change scene, make sure to properly implement the value: " + value);
-  }
-});
+//Create the game ui that is identic for all of the scenes
+export const uiManager = new UIManager(new Map<string, Scene>([
+  ["aceOfShadow", aceOfShadow],
+  ["magicWorlds", magicWorlds],
+  ["phoenixFlame", phoenixFlame]
+]));

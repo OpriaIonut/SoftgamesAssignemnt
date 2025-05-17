@@ -1,18 +1,18 @@
-import { Application, ColorSource, Container, Point, Text } from "pixi.js";
+import { Application, ColorSource, Container, Point } from "pixi.js";
 import { initDevtools } from "@pixi/devtools"
 import { Scene } from "./Utils/Scene";
+import { uiManager } from "../client";
 
+//Class responsible for all of the rendering logic, setting up the application, game loop and a couple of utility functions relevant to the webpage itself
 export class Game
 {
     private app!: Application;
-    private scenes: Scene[] = [];
+    private scenes: Scene[] = []; //A list of all of the scenes that we can change between. When we change scenes, we remove all of the gfx in that scene and reset the scene to it's initial state.
 
-    private activeSceneIndex: number = -1;
+    private activeSceneIndex: number = -1; //Minus 1 until we load a scene, then it will be equal to that scene's index
 
     private startTime: number = 0.0;
     private currentTime: number = 0.0;
-
-    private fpsCounter!: Text;
 
     constructor(bgColor: ColorSource = 0x000000)
     {
@@ -21,6 +21,7 @@ export class Game
 
     private init(bgColor: ColorSource)
     {
+        //Create the app
         this.app = new Application({
             resizeTo: window,
             backgroundColor: bgColor
@@ -28,17 +29,12 @@ export class Game
         this.app.stage.sortableChildren = true;
         document.body.appendChild(this.app.view as HTMLCanvasElement);
 
-        initDevtools({ app: this.app });
+        initDevtools({ app: this.app }); //Set up devtools to more easily inspect the logic with the chrome devtools extension.
+
+        //Set up game loop
         this.app.ticker.add(() => { 
             this.update(); 
         });
-
-        this.fpsCounter = new Text("FPS: 0", {
-            fontSize: 22
-        });
-        this.fpsCounter.position.set(window.innerWidth - 50, 25);
-        this.fpsCounter.anchor.set(1, 0);
-        this.app.stage.addChild(this.fpsCounter);
 
         this.startTime = performance.now();
     }
@@ -47,16 +43,18 @@ export class Game
     {
         let timeSinceStartMS = performance.now();
         this.currentTime = (timeSinceStartMS - this.startTime) / 1000;
-
-        let deltaTime = this.app.ticker.deltaMS * 0.001;
-        let fps = this.app.ticker.FPS;
-        this.fpsCounter.text = "FPS: " + Math.round(fps);
-        
+     
+        //Update the current scene
         if(this.activeSceneIndex >= 0)
             this.scenes[this.activeSceneIndex].update();
+
+        uiManager.displayFPS(this.app.ticker.FPS);
     }
 
-    public getCurrentTime() { return this.currentTime; }
+    public getCurrentTime() 
+    { 
+        return this.currentTime; 
+    }
 
     public addScene(scene: Scene)
     {
@@ -75,14 +73,25 @@ export class Game
         }
     }
 
+    public addGfxStage(gfx: Container)
+    {
+        this.app.stage.addChild(gfx);
+    }
+    public removeGfxFromStage(gfx: Container)
+    {
+        this.app.stage.removeChild(gfx);
+    }
+
     public changeScene(scene: Scene)
     {
+        //Remove the gfx of the previous scene and reset if (if we were previously rendering a scene)
         if(this.activeSceneIndex >= 0)
         {
             this.app.stage.removeChild(this.scenes[this.activeSceneIndex].getScene());
             this.scenes[this.activeSceneIndex].reset();
         }
 
+        //Find the current scene index
         for(let index = 0; index < this.scenes.length; ++index)
         {
             if(this.scenes[index] == scene)
@@ -91,6 +100,8 @@ export class Game
                 break;
             }
         }
+        
+        //Start rendering the new scene
         this.app.stage.addChild(this.scenes[this.activeSceneIndex].getScene());
         this.scenes[this.activeSceneIndex].start();
     }

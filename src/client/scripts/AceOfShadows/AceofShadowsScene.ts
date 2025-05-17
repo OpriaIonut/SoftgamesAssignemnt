@@ -8,11 +8,12 @@ export class AceOfShadowsScene extends Scene
 
     public async start() 
     {
+        //If it's the first time running this scene, set up the card deck
         if(!this.isInitialized)
         {
             this.scene.sortableChildren = true;
             this.deck = new DeckManager(this);
-            await this.deck.init(process.env.IMG_BASE_URL + "/images/aceOfShadowsSprites.png", 16, 16, 144);
+            await this.deck.init("/images/aceOfShadowsSprites.png", 16, 16, 144);
         }
 
         this.deck?.start();
